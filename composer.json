@@ -1,0 +1,37 @@
+{
+    "name": "abigah/bot-cop",
+    "autoload": {
+        "psr-4": {
+            "Abigah\\BotCop\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Abigah\\BotCop\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "statamic/cms": "^5.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "pixelfear/composer-dist-plugin": true
+        }
+    },
+    "extra": {
+        "statamic": {
+            "name": "Bot Cop",
+            "description": "Bot Cop addon"
+        },
+        "laravel": {
+            "providers": [
+                "Abigah\\BotCop\\ServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
