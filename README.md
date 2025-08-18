@@ -78,13 +78,13 @@ BOT_COP_FORGE_SERVER_ID=889273
 ```
 
 ### Ensure the scheduler is setup (the Statamic one)
-As long as the scheduler is setup, IPs will be unbanned after an hour (customizable). If you don't set it up, you'll have to remove the IPs manually.
+As long as the scheduler is setup, IPs will be unbanned after an hour (customizable). If you don't set it up, you'll have to remove the IPs manually. We default to running the removal command every 10 minutes to prevent issues with rate-limiting.
 https://statamic.dev/scheduling#
 
 ## Some things to watch for...
 
 ### Cloudflare only allows 1 custom list on the free plan.
-It can handle 10000 or 1000000 IPs (depending on whether you are looking at the API documentation or the List Creation UI) so you should be okay as long as you are treating the bans as temporary. This addon doesn't use WAF due to requiring the Enterprise Plan, but if you want us to, reach out. If you have multiple domains you want to protect, you can. Read on...
+It can handle 10000 IPs so you should be okay as long as you are treating the bans as temporary. This addon doesn't use WAF due to requiring the Enterprise Plan, but if you want us to, reach out. If you have multiple domains you want to protect, you can. Read on...
 
 ### Multiple Projects
 There are a number of options in the config file that you can override. If you use this addon in multiple projects, you can setup the Cloudflare and Forge Rule Names so each proejct will add and remove the IPs with that name filter. HOWEVER, It won't allow you to add the same IP address if it is already in the list, so you may end up removing it on the first site while it's active on the second. The first 404 on the second will add it back though.
