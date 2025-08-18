@@ -67,6 +67,6 @@ class ServiceProvider extends AddonServiceProvider
 
     protected function schedule($schedule)
     {
-        $schedule->command('statamic:addons:abigah:bot-cop:remove-banned-ip')->everyMinute(1)->withoutOverlapping();
+        $schedule->command('statamic:addons:abigah:bot-cop:remove-ips')->everyMinute(1)->withoutOverlapping();
     }
 }
