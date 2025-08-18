@@ -1,82 +1,83 @@
 <?php
 
+use Abigah\BotCop\Services\ForgeService;
+use Abigah\BotCop\Services\LoggingService;
+use Abigah\BotCop\Services\CloudflareService;
+
 return [
 
-    /*
-     * Turn the forge blocking on and off here or in your env file.
-     */
-    'forge_block_enabled' => env('BOT_COP_FORGE_BLOCK_ENABLED', true),
+    'enabled' => explode(',', env('BOT_COP_ENABLED_SERVICES', 'logging')),
 
-    /*
-     * Turn the cloudflare IP list adding on and off here or in your env file.
-     */
-    'cloudflare_ip_list_enabled' => env('BOT_COP_CLOUDFLARE_IP_LIST_ENABLED', true),
-
-    /*
-     * The name to use for the forge firewall rule, will default to 'bot-cop'.
-     */
-    'firewall-rule-name' => env('BOT_COP_FIREWALL_RULE_NAME', 'bot-cop'),
-
-    /*
-     * Turn the logging on and off her or in your env file.
-     */
-    'log_enabled' => env('BOT_COP_LOG_ENABLED', true),
-
-    /*
-     * You can automatically delete log files after a certain amount of days.
-     * Setting this to 0 will prevent any deletions.
-     */
-    'delete-after' => 7,
-
-    /*
-    * The number of minutes to keep the IP banned in forge.
-    * Setting this to 0 will prevent any removals.
-    */
-    'remove-after' => env('BOT_COP_REMOVE_AFTER', 60),
-
-
-    /*
-     * Option to change the name of the log files to avoid any conflicts.
-     */
-    'log-name' => env('BOT_COP_LOG_NAME', 'botcop'),
-
-    /*
-     * The Cloudflare API Token.
-     */
-    'cloudflare-api-token' => env('BOT_COP_CLOUDFLARE_API_TOKEN', ''),
-
-    /*
-     * The Cloudflare List ID.
-     */
-    'cloudflare-list-id' => env('BOT_COP_CLOUDFLARE_LIST_ID', ''),
-
-    /*
-     * The Laravel Forge API Key.
-     */
-    'forge-api-token' => env('BOT_COP_FORGE_API_TOKEN', ''),
-
-    /*
-     * The Forge Server ID.
-     */
-    'forge-server-id' => env('BOT_COP_FORGE_SERVER_ID', ''),
+    'services' => [
+        'forge' => [
+            'service' => ForgeService::class,
+            'api_token' => env('BOT_COP_FORGE_API_TOKEN', ''),
+            'server_id' => env('BOT_COP_FORGE_SERVER_ID', ''),
+            'rule_name' => env('BOT_COP_FORGE_RULE_NAME', 'BotCop:temporary'),
+            'remove_after' => env('BOT_COP_FORGE_REMOVE_AFTER', 60),
+        ],
+        'cloudflare' => [
+            'service' => CloudflareService::class,
+            'api_token' => env('BOT_COP_CLOUDFLARE_API_TOKEN', ''),
+            'account_id' => env('BOT_COP_CLOUDFLARE_ACCOUNT_ID', ''),
+            'list_id' => env('BOT_COP_CLOUDFLARE_LIST_ID', ''),
+            'rule_name' => env('BOT_COP_CLOUDFLARE_RULE_NAME', 'BotCop:temporary'),
+            'remove_after' => env('BOT_COP_CLOUDFLARE_REMOVE_AFTER', 60),
+        ],
+        'logging' => [
+            'service' => LoggingService::class,
+            'log_name' => env('BOT_COP_LOG_NAME', 'botcop'),
+            'delete_log_after' => env('BOT_COP_DELETE_LOG_AFTER', 7),
+        ]
+    ],
 
     /*
      * The whitelist IP addresses. We won't ban these IPs.
+     * If you want to add more IPs, just add them to this array.
+     * localhost etc. If testing on local, comment these out.
+     * Cloudflare IPs from https://www.cloudflare.com/ips/
      */
     'whitelist-ips' => [
-        // 'localhost',
-        // '127.0.0.1',
-        // '::1',
+        # localhost, etc.
+        'localhost',
+        '127.0.0.1',
+        '::1',
+        # Cloudflare
+        '173.245.48.0/20',
+        '103.21.244.0/22',
+        '103.22.200.0/22',
+        '103.31.4.0/22',
+        '141.101.64.0/18',
+        '108.162.192.0/18',
+        '190.93.240.0/20',
+        '188.114.96.0/20',
+        '197.234.240.0/22',
+        '198.41.128.0/17',
+        '162.158.0.0/15',
+        '104.16.0.0/13',
+        '104.24.0.0/14',
+        '172.64.0.0/13',
+        '131.0.72.0/22',
+        '2400:cb00::/32',
+        '2606:4700::/32',
+        '2803:f800::/32',
+        '2405:b500::/32',
+        '2405:8100::/32',
+        '2a06:98c0::/29',
+        '2c0f:f248::/32'
     ],
 
     /*
      * The blacklist paths.
+     * Note: If you create a page or route using one of these paths,
+     * BotCop will not trigger as it won't 404.
      */
     'blacklist-paths' => [
         '.env',
         '.git/config',
         '.git/HEAD',
-        '.well-known/security.txt',
+        '.vscode',
+        'wp-config',
         'wp-includes',
         'wp-admin/css',
         'x00',
@@ -88,5 +89,18 @@ return [
         'x06',
         'x07',
         'x08',
+        'x09',
+        'x0A',
+        'x0B',
+        'x0C',
+        'x0D',
+        'x0E',
+        'x0F',
+        'x10',
+        'x11',
+        'x12',
+        'x13',
+        'x14',
+        'x15',
     ],
 ];
