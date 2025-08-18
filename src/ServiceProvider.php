@@ -29,10 +29,6 @@ class ServiceProvider extends AddonServiceProvider
             ], 'bot-cop');
         }
 
-        // Statamic::afterInstalled(function ($command) {
-        //     $command->call('vendor:publish', ['--tag' => 'bot-cop']);
-        // });
-
         $this->app->make('config')->set('logging.channels.bot-cop', [
             'driver' => 'daily',
             'path' => storage_path('logs/'.config('bot-cop.services.logging.log-name', 'bot-cop').'.log'),
@@ -69,6 +65,8 @@ class ServiceProvider extends AddonServiceProvider
 
     protected function schedule($schedule)
     {
-        $schedule->command('statamic:addons:abigah:bot-cop:remove-ips')->everyMinute(1)->withoutOverlapping();
+        $schedule->command('statamic:addons:abigah:bot-cop:remove-ips')
+            ->everyMinute(config('bot-cop.scheduler'))
+            ->withoutOverlapping();
     }
 }

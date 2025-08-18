@@ -58,25 +58,27 @@ class CloudflareService implements ServiceContract
                 ->get("https://api.cloudflare.com/client/v4/accounts/" . $this->accountId . "/rules/lists/" . $this->listId . "/items");
 
             // Loop through the response and check if the IPs are older than the configured remove-after time
+            $removeIps = [];
             foreach ($response->json()['result'] as $item) {
                 if(($this->ruleName == $item["comment"]) && (\Carbon\Carbon::parse($item['created_on'])->diffInMinutes(now()) >= $this->removeAfter)) {
-                    // Remove the IP from the Cloudflare list
-                    $deleteResponse = Http::withToken($this->apiToken)
-                        ->delete("https://api.cloudflare.com/client/v4/accounts/" . $this->accountId . "/rules/lists/" . $this->listId . "/items", [
-                            "items" => [
-                                [
-                                    "id" => $item['id'],
-                                ],
-                            ],
-                        ]);
+                    // Add IP to the remove Ips array
+                    $removeIps[] = ["id" => $item['id']];
+                }
+            }
 
-                    if ($deleteResponse->successful()) {
-                        Log::channel('bot-cop')->info('Removed IP ' . $item["ip"] . ' from Cloudflare list.');
-                    }
-                    if ($deleteResponse->failed()) {
-                        Log::channel('bot-cop')->error('Failed to remove IP ' . $item["ip"] . ' from Cloudflare list.');
-                        Log::channel('bot-cop')->error($deleteResponse->json());
-                    }
+            // Remove the IP from the Cloudflare list
+            if (!empty($removeIps)) {
+                $deleteResponse = Http::withToken($this->apiToken)
+                    ->delete("https://api.cloudflare.com/client/v4/accounts/" . $this->accountId . "/rules/lists/" . $this->listId . "/items", [
+                        "items" => $removeIps
+                    ]);
+
+                if ($deleteResponse->successful()) {
+                    Log::channel('bot-cop')->info('Removed IPs from Cloudflare list.');
+                }
+                if ($deleteResponse->failed()) {
+                    Log::channel('bot-cop')->error('Failed to remove IPs from Cloudflare list.');
+                    Log::channel('bot-cop')->error($deleteResponse->json());
                 }
             }
         }
