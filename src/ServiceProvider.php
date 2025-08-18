@@ -17,6 +17,8 @@ class ServiceProvider extends AddonServiceProvider
         ],
     ];
 
+    protected $publishAfterInstall = false;
+
     public function bootAddon()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/bot-cop.php', 'bot-cop');
