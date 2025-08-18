@@ -74,7 +74,7 @@ BOT_COP_FORGE_RULE_NAME=YouCanMakeThisSiteSpecific
 ```
 
 ### Statamic Multisite / Other sites on the same server
-Once an IP is added to the list, it is unable to see any other sites using the same IP list (Cloudflare) or on the smae server (Laravel Forge).
+Once an IP is added to the list, it is unable to see any other sites using the same IP list (Cloudflare) or on the same server (Laravel Forge).
 
 ### Temporary Bans vs Permanent
 Most jailing of bots and spiders is done temporarily. If you want to use the same IP list or firewall to ban an IP permanently, give it a different name or comment than the config file and it won't automatically remove it.
