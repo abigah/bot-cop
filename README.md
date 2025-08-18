@@ -1,5 +1,8 @@
 # Bot Cop
 
+WARNING: THIS IS PRE-ALPHA SOFTWARE. IT IS PUBLIC ONLY FOR TESTING. FEEL FREE TO STAR/SUBSCRIBE.
+USE AT YOUR OWN RISK!
+
 > Tired of those bots cluttering your server logs, looking for Wordpress?
 > Sure, you can setup fail2ban and lock yourself out of your server. Or...
 > you can use Bot Cop to watch 404 traffic and integrate with Cloudflare or
