@@ -5,6 +5,7 @@
             "Abigah\\BotCop\\": "src"
         }
     },
+    "license": "MIT",
     "autoload-dev": {
         "psr-4": {
             "Abigah\\BotCop\\Tests\\": "tests"
@@ -24,7 +25,7 @@
     "extra": {
         "statamic": {
             "name": "Bot Cop",
-            "description": "Bot Cop addon"
+            "description": "Block Bad Bots in Laravel Forge and Cloudflare."
         },
         "laravel": {
             "providers": [
