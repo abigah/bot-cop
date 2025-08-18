@@ -54,6 +54,9 @@ BOT_COP_FORGE_API_TOKEN=
 BOT_COP_FORGE_SERVER_ID=
 ```
 
+### Ensure the scheduler is setup (the Statamic one)
+As long as the scheduler is setup, IPs will be unbanned after an hour (customizable).
+
 ## Things to watch for
 
 ### Cloudflare only allows 1 custom list on the free plan.
@@ -62,5 +65,16 @@ It can handle a million IPs so you should be okay. This addon doesn't use WAF du
 ### Multiple Projects
 There are a number of options in the config file that you can override. If you use this addon in multiple projects, you can setup the Cloudflare and Forge Rule Names so each proejct will add and remove the IPs with that name filter. HOWEVER, It won't allow you to add the same IP address if it is already in the list, so you may end up removing it on the first site while it's active on the second. The first 404 on the second will add it back though.
 
+```php
+BOT_COP_CLOUDFLARE_RULE_NAME=YouCanMakeThisSiteSpecific
+BOT_COP_FORGE_RULE_NAME=YouCanMakeThisSiteSpecific
+```
+
 ### Statamic Multisite / Other sites on the same server
 Once an IP is added to the list, it is unable to see any other sites using the same IP list (Cloudflare) or on the smae server (Laravel Forge).
+
+### Temporary Bans vs Permanent
+Most jailing of bots and spiders is done temporarily. If you want to use the same IP list or firewall to ban an IP permanently, give it a different name or comment than the config file and it won't automatically remove it.
+
+
+
