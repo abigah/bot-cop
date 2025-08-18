@@ -29,9 +29,9 @@ class ServiceProvider extends AddonServiceProvider
             ], 'bot-cop');
         }
 
-        Statamic::afterInstalled(function ($command) {
-            $command->call('vendor:publish', ['--tag' => 'bot-cop']);
-        });
+        // Statamic::afterInstalled(function ($command) {
+        //     $command->call('vendor:publish', ['--tag' => 'bot-cop']);
+        // });
 
         $this->app->make('config')->set('logging.channels.bot-cop', [
             'driver' => 'daily',
