@@ -1,7 +1,7 @@
 # Bot Cop
 
 WARNING: THIS IS PRE-ALPHA SOFTWARE. IT IS PUBLIC ONLY FOR TESTING. FEEL FREE TO STAR/SUBSCRIBE.
-USE AT YOUR OWN RISK!
+USE AT YOUR OWN RISK! IT WILL BE A PAID LICENSE THROUGH THE STATAMIC MARKETPLACE WHEN RELEASED.
 
 > Tired of those bots cluttering your server logs, looking for Wordpress?
 > Sure, you can setup fail2ban and lock yourself out of your server. Or...
