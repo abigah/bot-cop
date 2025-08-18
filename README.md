@@ -78,7 +78,7 @@ BOT_COP_FORGE_SERVER_ID=889273
 ```
 
 ### Ensure the scheduler is setup (the Statamic one)
-As long as the scheduler is setup, IPs will be unbanned after an hour (customizable). If you don't set it up, you'll have to remove the IPs manually. We default to running the removal command every 10 minutes to prevent issues with rate-limiting.
+As long as the scheduler is setup, IPs will be unbanned after an hour (customizable). If you don't set it up, you'll have to remove the IPs manually. We default to running the removal command every 30 minutes to prevent issues with rate-limiting.
 https://statamic.dev/scheduling#
 
 ## Some things to watch for...

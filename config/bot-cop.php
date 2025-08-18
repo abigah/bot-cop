@@ -32,14 +32,6 @@ return [
     ],
 
     /*
-     * The scheduler will run every minute by default. We don't need to.
-     * We're going to run every 10 minutes instead to prevent API 
-     * rate-limiting. You can customize this.
-     */
-
-    'scheduler' => env('BOT_COP_SCHEDULER', 10),
-
-    /*
      * The whitelist IP addresses. We won't ban these IPs.
      * If you want to add more IPs, just add them to this array.
      * localhost etc. If testing on local, comment these out.
