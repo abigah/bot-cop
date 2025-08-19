@@ -5,13 +5,13 @@ RECOMMENDED FOR NON-CRITICAL SITES. FEEL FREE TO STAR/SUBSCRIBE TO THE REPO FOR 
 
 USE AT YOUR OWN RISK! IT WILL BE A PAID LICENSE THROUGH THE STATAMIC MARKETPLACE WHEN RELEASED.
 
-Tired of those bots cluttering your server logs, looking for Wordpress vulnerabilies? There's
+**Tired of those bots cluttering your server logs, looking for Wordpress vulnerabilies? There's
 a reason you are using Statamic, you don't need to provide valuable server resources to these
-bots.
+bots.**
 
-Sure, you can setup fail2ban everywhere and accidentally lock yourself out of your server.
+**Sure, you can setup fail2ban everywhere and accidentally lock yourself out of your server.
 Or... you can use Bot Cop to watch 404 traffic and integrate with Cloudflare or
-Laravel Forge to prevent the bot from getting to your server in the first place.
+Laravel Forge to prevent the bot from getting to your server in the first place.**
 
 ## Features
 
