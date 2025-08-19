@@ -32,12 +32,12 @@ return [
     ],
 
     /*
-     * The whitelist IP addresses. We won't ban these IPs.
+     * The allowed IP addresses. We won't ban these IPs.
      * If you want to add more IPs, just add them to this array.
      * localhost etc. If testing on local, comment these out.
      * Cloudflare IPs from https://www.cloudflare.com/ips/
      */
-    'whitelist-ips' => [
+    'allowed-ips' => [
         # localhost, etc.
         'localhost',
         '127.0.0.1',
@@ -68,11 +68,11 @@ return [
     ],
 
     /*
-     * The blacklist paths.
+     * The blocked paths.
      * Note: If you create a page or route using one of these paths,
      * BotCop will not trigger as it won't 404.
      */
-    'blacklist-paths' => [
+    'blocked-paths' => [
         '.env',
         '.git/config',
         '.git/HEAD',

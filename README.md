@@ -93,10 +93,10 @@ Once an IP is added to the list, it is unable to see any other sites using the s
 ### Temporary Bans vs Permanent
 Most jailing of bots and spiders is done temporarily. If you want to use the same IP list or firewall to ban an IP permanently, give it a different name or comment than the config file and it won't automatically remove it.
 
-### Can I add to the whitelist?
+### Can I add to the allowed list?
 Of course, you can publish the config or give us a PR. I'm also working on a Control Panel dashboard to make it something that can be done there to prevent having to deploy. Note that when you publish the config, you won't get our updates to it so you may want to hold off until we solidify all the variables.
 
-### Can I add to the blacklist?
+### Can I add to the blocked list?
 For sure, you can publish the config or give us a PR. I'm also working on a Control Panel dashboard to make it something that can be done there to prevent having to deploy. Note that when you publish the config, you won't get our updates to it so you may want to hold off until we solidify all the variables.
 
 ### I'm using a different firewall or proxy, will you support it?
