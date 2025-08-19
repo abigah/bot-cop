@@ -80,7 +80,7 @@ https://statamic.dev/scheduling#
 It can handle 10000 IPs so you should be okay as long as you are treating the bans as temporary. This addon doesn't use WAF due to requiring the Enterprise Plan, but if you want us to, reach out. If you have multiple domains you want to protect, you can. Read on...
 
 ### Multiple Projects
-There are a number of options in the config file that you can override. If you use this addon in multiple projects, you can setup the Cloudflare and Forge Rule Names so each proejct will add and remove the IPs with that name filter. HOWEVER, It won't allow you to add the same IP address if it is already in the list, so you may end up removing it on the first site while it's active on the second. The first 404 on the second will add it back though.
+There are a number of options in the config file that you can override. If you use this addon in multiple projects, you can setup the Cloudflare and Forge Rule Names so each project will add and remove the IPs with that name filter. However, It won't allow you to add the same IP address if it is already in the list, so you may end up removing it even though the bot may be trying to hit the second. The first 404 on the other site will add it back though. it could have some interesting race conditions in the logs but it shouldn't cause a problem.
 
 ```php
 BOT_COP_CLOUDFLARE_RULE_NAME=YouCanMakeThisSiteSpecific
