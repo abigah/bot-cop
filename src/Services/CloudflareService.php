@@ -60,7 +60,11 @@ class CloudflareService implements ServiceContract
             // Loop through the response and check if the IPs are older than the configured remove-after time
             $removeIps = [];
             foreach ($response->json()['result'] as $item) {
-                if(($this->ruleName == $item["comment"]) && (\Carbon\Carbon::parse($item['created_on'])->diffInMinutes(now()) >= $this->removeAfter)) {
+                $createdOn = \Carbon\Carbon::parse($item['created_on'])->copy()->shiftTimezone('UTC');
+                $now = \Carbon\Carbon::now()->copy()->setTimezone('UTC');
+                $diff = $createdOn->diffInMinutes($now);
+
+                if(($this->ruleName == $item["comment"]) && ($diff >= $this->removeAfter)) {
                     // Add IP to the remove Ips array
                     $removeIps[] = ["id" => $item['id']];
                 }
