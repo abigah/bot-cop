@@ -63,7 +63,12 @@ class ForgeService implements ServiceContract
 
             // Loop through the response and check if the IPs are older than the configured remove-after time
             foreach ($response->json()['rules'] as $rule) {
-                if (($rule['name'] === $this->ruleName) && (\Carbon\Carbon::parse($rule['created_at'])->diffInMinutes(now()) >= $this->removeAfter)) {
+                // For debugging timezone issues
+                if (($rule['name'] === $this->ruleName)) {
+                    Log::channel('bot-cop')->info('IP: ' . $rule['ip_address'] . ', Difference:' . \Carbon\Carbon::parse($rule['created_at'])->diffInMinutes(now()->tz('UTC')));
+                }
+
+                if (($rule['name'] === $this->ruleName) && (\Carbon\Carbon::parse($rule['created_at'])->diffInMinutes(now()->tz('UTC')) >= $this->removeAfter)) {
                     // Remove the IP from the Bot Cop service
                     $deleteResponse = Http::withHeaders([
                         'Accept' => 'application/json',
