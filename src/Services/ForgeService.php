@@ -2,6 +2,7 @@
 
 namespace Abigah\BotCop\Services;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Abigah\BotCop\Services\ServiceContract;
@@ -23,7 +24,7 @@ class ForgeService implements ServiceContract
      * @return \Illuminate\Http\Response
      */
 
-    public function addIp(string $ip, string $path) {
+    public function addIp(string $ip, string $host, string $path) {
 
         if ($this->apiToken && $this->serverId) {
             $response = Http::withHeaders([
@@ -32,7 +33,7 @@ class ForgeService implements ServiceContract
                             ])
                             ->withToken( $this->apiToken )
                             ->post("https://forge.laravel.com/api/v1/servers/" . $this->serverId . "/firewall-rules", [
-                                'name' => $this->ruleName,
+                                'name' => $this->ruleName . " - " . $host,
                                 'ip_address' => $ip,
                                 'port' => '80:443',
                                 'type' => 'deny',
@@ -69,15 +70,15 @@ class ForgeService implements ServiceContract
                 $diff = $createdAt->diffInMinutes($now);
 
                 // For debugging timezone
-                if (($rule['name'] === $this->ruleName)) {
+                if ((str_contains($rule["name"], $this->ruleName))) {
                     Log::channel('bot-cop')->info('IP: ' . $rule['ip_address'] . '. '
                         . ' - Created at: ' . $createdAt
                         . ' - Now: ' . $now
                         . ' - Diff: ' . $diff);
                 }
 
-                if (($rule['name'] === $this->ruleName) && ($diff >= $this->removeAfter)) {
-                    // Remove the IP from the Bot Cop service
+                if ((str_contains($rule["name"], $this->ruleName)) && ($diff >= $this->removeAfter)) {
+                    // Remove the IP from Forge
                     $deleteResponse = Http::withHeaders([
                         'Accept' => 'application/json',
                         'Content-Type' => 'application/json',

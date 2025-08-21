@@ -24,7 +24,7 @@ class CloudflareService implements ServiceContract
      * @return \Illuminate\Http\Response
      */
 
-    public function addIp(string $ip, string $path) {
+    public function addIp(string $ip, string $host, string $path) {
         // Add the IP address to the Cloudflare IP list.
 
         if ($this->apiToken && $this->listId) {
@@ -32,7 +32,7 @@ class CloudflareService implements ServiceContract
                 ->post("https://api.cloudflare.com/client/v4/accounts/" . $this->accountId . "/rules/lists/" . $this->listId . "/items", [
                     [
                         "ip" => $ip,
-                        "comment" => $this->ruleName
+                        "comment" => $this->ruleName . " - " . $host,
                     ],
             ]);
 
@@ -64,7 +64,7 @@ class CloudflareService implements ServiceContract
                 $now = \Carbon\Carbon::now()->copy()->setTimezone('UTC');
                 $diff = $createdOn->diffInMinutes($now);
 
-                if(($this->ruleName == $item["comment"]) && ($diff >= $this->removeAfter)) {
+                if((str_contains($item["comment"], $this->ruleName)) && ($diff >= $this->removeAfter)) {
                     // Add IP to the remove Ips array
                     $removeIps[] = ["id" => $item['id']];
                 }

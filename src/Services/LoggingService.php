@@ -12,12 +12,11 @@ class LoggingService implements ServiceContract
         protected int $deleteLogAfter
     ) { }
 
-    public function addIp(string $ip, string $path) {
-        Log::alert('BotCop is banning IP: ' . $ip . ' for path: ' . $path);
-        Log::channel('bot-cop')->info('LoggingService: Bad Bot IP Added: ' . $ip);
+    public function addIp(string $ip, string $host, string $path) {
+        Log::channel('bot-cop')->alert('BotCop is banning IP: ' . $ip . ' for url: ' . $host . '/' . $path);
     }
 
     public function removeIps() {
-        Log::channel('bot-cop')->info('LoggingService: Bad Bot IPs Removed');
+        Log::channel('bot-cop')->info('LoggingService: Bad Bot IP Removing');
     }
 }

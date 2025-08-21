@@ -3,6 +3,7 @@ namespace Abigah\BotCop\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BotCopMiddleware
 {
@@ -34,13 +35,14 @@ class BotCopMiddleware
                 if (str_contains($request->path(), $blockedPath)) {
 
                     foreach (config('bot-cop.enabled', []) as $service) {
-                        app(config("bot-cop.services." . $service . ".service"))->addIp($ip, $request->path());
+                        app(config("bot-cop.services." . $service . ".service"))->addIp($ip, $request->host(), $request->path());
                     }
 
                     // Return a 403 on a blocked path match, regardless of services enabled.
                     return response('Forbidden', 403);
                 }
             }
+            Log::channel('bot-cop')->info('LoggingService: 404 for IP: ' . $ip . ' URL: ' . $request->host() . '/' . $request->path());
         }
         return $response;
     }

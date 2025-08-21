@@ -17,8 +17,6 @@ class ServiceProvider extends AddonServiceProvider
         ],
     ];
 
-    protected $publishAfterInstall = false;
-
     public function bootAddon()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/bot-cop.php', 'bot-cop');
@@ -31,9 +29,9 @@ class ServiceProvider extends AddonServiceProvider
 
         $this->app->make('config')->set('logging.channels.bot-cop', [
             'driver' => 'daily',
-            'path' => storage_path('logs/'.config('bot-cop.services.logging.log-name', 'bot-cop').'.log'),
+            'path' => storage_path('logs/'.config('bot-cop.services.logging.log_name', 'bot-cop').'.log'),
             'level' => 'debug',
-            'days' => config('bot-cop.services.logging.delete-log-after', 7),
+            'days' => config('bot-cop.services.logging.delete_log_after', 7),
         ]);
 
         $this->app->bind(LoggingService::class, function ($app) {
