@@ -74,17 +74,21 @@ return [
      */
     'blocked-paths' => [
         '.env',
+        'env.',
         '.git/config',
         '.git/HEAD',
         '.vscode',
         'alfa',
         'file.php',
         'plugins.php',
+        'phpinfo.html'.
+        'phpinfo.php',
+        'php_info',
         'network.php',
         'wp-config',
         'wp-includes',
         'wp-admin/css',
-        'x0',
-        'x1'
+        'x00',
+        'x01',
     ],
 ];
