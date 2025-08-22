@@ -17,30 +17,36 @@ class BotCopMiddleware
 
             // Check if the current IP is in the whitelist
             foreach (config('bot-cop.allowed-ips', []) as $allowedIp) {
-                    if (str_contains($allowedIp, '/')) {
-                        // Handle CIDR notation (e.g., 192.168.1.0/24 or 2001:db8::/32)
-                        if (filter_var($ip, FILTER_VALIDATE_IP) && $this->ipInCidr($ip, $allowedIp)) {
-                            if($request->header('X-Forwarded-For')){
-                                $ip = $request->header('X-Forwarded-For') ?: $request->ip();
-                            } else {
-                                return $response;
-                            }
-                            
+                if (str_contains($allowedIp, '/')) {
+
+                    // Handle CIDR notation (e.g., 192.168.1.0/24 or 2001:db8::/32)
+                    if (filter_var($ip, FILTER_VALIDATE_IP) && $this->ipInCidr($ip, $allowedIp)) {
+
+                        // Treat allowed IPs as trusted but anyone using X-Forwarded-For goes on.
+                        if($request->header('X-Forwarded-For')){
+                            $ip = $request->header('X-Forwarded-For') ?: $request->ip();
+                        } else {
+                            return $response;
                         }
-                    } else {
-                        // Handle single IP addresses
-                        if ($ip === $allowedIp) {
-                            if($request->header('X-Forwarded-For')){
-                                $ip = $request->header('X-Forwarded-For') ?: $request->ip();
-                            } else{
-                                return $response;
-                            }
+                        
+                    }
+                } else {
+                    // Handle single IP addresses
+                    if ($ip === $allowedIp) {
+
+                        // Treat allowed IPs as trusted but anyone using X-Forwarded-For goes on.
+                        if($request->header('X-Forwarded-For')){
+                            $ip = $request->header('X-Forwarded-For') ?: $request->ip();
+                        } else{
+                            return $response;
                         }
                     }
+                }
             }
 
             // Check if the request path is in the blocked paths
             foreach (config('bot-cop.blocked-paths', []) as $blockedPath) {
+
                 if (str_contains($request->path(), $blockedPath)) {
 
                     foreach (config('bot-cop.enabled', []) as $service) {
@@ -50,8 +56,11 @@ class BotCopMiddleware
                     // Return a 403 on a blocked path match, regardless of services enabled.
                     return response('Forbidden', 403);
                 }
+
             }
+
             Log::channel('bot-cop')->info('LoggingService: 404 for IP: ' . $ip . ' URL: ' . $request->host() . '/' . $request->path());
+            
         }
         return $response;
     }
