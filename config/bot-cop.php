@@ -91,7 +91,7 @@ return [
         'x00',
         'x01',
         'x02',
-        'x03'
+        'x03',
         'file-manager/tinymce',
         'file-manager/content',
         'laravel-file-manager',
