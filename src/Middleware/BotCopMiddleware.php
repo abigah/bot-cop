@@ -20,9 +20,9 @@ class BotCopMiddleware
                     if (str_contains($allowedIp, '/')) {
                         // Handle CIDR notation (e.g., 192.168.1.0/24 or 2001:db8::/32)
                         if (filter_var($ip, FILTER_VALIDATE_IP) && $this->ipInCidr($ip, $allowedIp)) {
-                            if($request->header('X-Forwarded-For'){
+                            if($request->header('X-Forwarded-For')){
                                 $ip = $request->header('X-Forwarded-For') ?: $request->ip();
-                            } else{
+                            } else {
                                 return $response;
                             }
                             
@@ -30,7 +30,7 @@ class BotCopMiddleware
                     } else {
                         // Handle single IP addresses
                         if ($ip === $allowedIp) {
-                            if($request->header('X-Forwarded-For'){
+                            if($request->header('X-Forwarded-For')){
                                 $ip = $request->header('X-Forwarded-For') ?: $request->ip();
                             } else{
                                 return $response;
