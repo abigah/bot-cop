@@ -4,6 +4,7 @@ namespace Abigah\BotCop\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 
 class BotCopMiddleware
 {
@@ -62,6 +63,16 @@ class BotCopMiddleware
             Log::channel('bot-cop')->info('LoggingService: 404 for IP: ' . $ip . ' URL: ' . $request->host() . '/' . $request->path());
             
         }
+
+        // If not a 404
+        if (RateLimiter::tooManyAttempts('page-hit:'.$request->ip(), config('rate-limiter.hits_per_minute', 20))) {
+            return response()->make('Too many requests!', '429')->withHeaders([
+                'Retry-After' => 60,
+            ]);
+        }
+
+        RateLimiter::increment('page-hit:'.$request->ip());
+
         return $response;
     }
 

@@ -31,6 +31,9 @@ return [
         ]
     ],
 
+    'rate_limit_toggle' => env('BOT_COP_RATE_LIMIT_TOGGLE', true),
+    'hits_per_minute' => env('BOT_COP_RATE_LIMIT_HITS_PER_MINUTE', 20),
+
     /*
      * The allowed IP addresses. We won't ban these IPs.
      * If you want to add more IPs, just add them to this array.
