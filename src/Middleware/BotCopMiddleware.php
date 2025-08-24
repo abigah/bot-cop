@@ -64,16 +64,21 @@ class BotCopMiddleware
             
         }
 
-        // If not a 404
-        if (RateLimiter::tooManyAttempts('page-hit:'.$request->ip(), config('rate-limiter.hits_per_minute', 20))) {
-            return response()->make('Too many requests!', '429')->withHeaders([
-                'Retry-After' => 60,
-            ]);
+        // if rate_limit_toggle is true
+        if (config('bot-cop.rate_limit_toggle', true)) {
+            // If not a 404
+            if (RateLimiter::tooManyAttempts('page-hit:'.$request->ip(), config('bot-cop.hits_per_minute', 20))) {
+                Log::channel('bot-cop')->info('LoggingService: 429 for IP: ' . $ip . ' URL: ' . $request->host() . '/' . $request->path());
+                return response()->make('Too many requests!', '429')->withHeaders([
+                    'Retry-After' => 60,
+                ]);
+            }
+
+            RateLimiter::increment('page-hit:'.$request->ip());
         }
 
-        RateLimiter::increment('page-hit:'.$request->ip());
-
         return $response;
+
     }
 
     /**
