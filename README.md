@@ -1,10 +1,5 @@
 # Bot Cop - Statamic Addon
 
-WARNING: THIS IS BETA SOFTWARE. ALTHOUGH IT IS INSTALLED ON SOME LARGE SITES ALREADY, IT IS 
-RECOMMENDED FOR NON-CRITICAL SITES. FEEL FREE TO STAR/SUBSCRIBE TO THE REPO FOR WHEN WE LAUNCH.
-
-USE AT YOUR OWN RISK! IT WILL BE A PAID LICENSE THROUGH THE STATAMIC MARKETPLACE WHEN RELEASED.
-
 **Tired of those bots cluttering your server logs, looking for Wordpress vulnerabilies? There's
 a reason you are using Statamic, you don't need to provide valuable server resources to these
 bots.**
@@ -19,6 +14,8 @@ This addon integrates with:
 
 - Cloudflare IP List (then you can setup rules on how to handle it)
 - Laravel Forge (UFW)
+
+Now with Laravel's built-in rate-limiting to catch the poorly configured spiders.
 
 ## How to Install
 
