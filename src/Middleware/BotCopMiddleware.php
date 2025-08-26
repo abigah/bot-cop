@@ -74,7 +74,9 @@ class BotCopMiddleware
                 ]);
             }
 
-            RateLimiter::increment('page-hit:'.$request->ip());
+            if($request->path() != "livewire/update"){ // TODO Make this an allowed path config.
+                RateLimiter::clear('page-hit:'.$request->ip());
+            }
         }
 
         return $response;
