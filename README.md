@@ -71,7 +71,19 @@ BOT_COP_FORGE_SERVER_ID=0000000
 As long as the scheduler is setup, IPs will be unbanned after an hour (customizable). If you don't set it up, you'll have to remove the IPs manually. We default to running the removal command every 30 minutes to prevent issues with rate-limiting.
 https://statamic.dev/scheduling#
 
+### Optional Configuration
+```php
+BOT_COP_RATE_LIMIT_TOGGLE=true or false (defaults to true)
+BOT_COP_RATE_LIMIT_HITS_PER_MINUTE=60 (defaults to 20)
+BOT_COP_RATE_LIMIT_EXTENDED_ALLOWED_PATHS='heartbeat,alive,assets' (if you're using glide, you'll want to include your public image folder)
+BOT_COP_EXTENDED_ALLOWED_IPS='xxx.xxx.xxx.xxx' (Running a server monitor on a multisite? You'll want to allow the IP)
+BOT_COP_EXTENDED_BLOCKED_PATHS='botcop,banme' (a comma-delimited string of paths to block)
+```
+
 ## Some things to watch for...
+
+### Rate-limiting
+If you are using Glide, the request isn't always clearly an image. You'll want to make sure your asset container's public directory is not rate-limited. To prevent the server from doing all the work when a bot is misconfigured, the rate-limiter engages (if true, default behavior) before the 404 check. We are also now checking the allowed IP and allowed path lists ahead of the 404 check to ensure the rate-limiting isn't triggered on an allowed IP or livewire updates.
 
 ### Cloudflare only allows 1 custom list on the free plan.
 It can handle 10000 IPs so you should be okay as long as you are treating the bans as temporary. This addon doesn't use WAF due to requiring the Enterprise Plan, but if you want us to, reach out. If you have multiple domains you want to protect, you can. Read on...
