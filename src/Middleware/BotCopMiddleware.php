@@ -12,7 +12,6 @@ class BotCopMiddleware
     public function handle(Request $request, Closure $next)
     {
         $ip = $request->getClientIp();
-        $ip = "192.168.1.1";
 
         // Check if the current IP is in the allowed_ips configuration
         // Or in the extended_allowed_ips configuration
