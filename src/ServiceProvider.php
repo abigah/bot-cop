@@ -64,7 +64,7 @@ class ServiceProvider extends AddonServiceProvider
     protected function schedule($schedule)
     {
         $schedule->command('statamic:addons:abigah:bot-cop:remove-ips')
-            ->everyThirtyMinutes()
+            ->hourlyAt(17);
             ->withoutOverlapping();
     }
 }

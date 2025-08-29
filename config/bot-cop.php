@@ -21,7 +21,7 @@ return [
             'api_token' => env('BOT_COP_CLOUDFLARE_API_TOKEN', ''),
             'account_id' => env('BOT_COP_CLOUDFLARE_ACCOUNT_ID', ''),
             'list_id' => env('BOT_COP_CLOUDFLARE_LIST_ID', ''),
-            'rule_name' => env('BOT_COP_CLOUDFLARE_RULE_NAME', 'BotCop:temporary'),
+            'rule_name' => env('BOT_COP_CLOUDFLARE_RULE_NAME', 'BotCop-temporary'),
             'remove_after' => env('BOT_COP_CLOUDFLARE_REMOVE_AFTER', 60),
         ],
         'logging' => [
@@ -41,11 +41,11 @@ return [
      * Cloudflare IPs from https://www.cloudflare.com/ips/
      */
     'allowed-ips' => [
-        # localhost, etc.
+        // localhosts
         'localhost',
         '127.0.0.1',
         '::1',
-        # Cloudflare
+        // Cloudflare IPs
         '173.245.48.0/20',
         '103.21.244.0/22',
         '103.22.200.0/22',
@@ -71,23 +71,37 @@ return [
     ],
 
     /*
+     * The extended allowed IPs, they will not be blocked.
+     */
+    'extended_allowed_ips' => explode(',', env('BOT_COP_EXTENDED_ALLOWED_IPS', '')),
+
+    /*
+     * The rate_limit_allowed paths, they will not count for rate limiting.
+     */
+    'rate_limit_allowed_paths' => [
+        'favicon.ico',
+        'robots.txt',
+        'sitemap.xml',
+        'sitemap_index.xml',
+        'livewire/update',
+    ],
+
+    /*
+     * Add to the paths that are exempt from rate limiting using the
+     * BOT_COP_RATE_LIMIT_EXTENDED_ALLOWED_PATHS environment variable.
+     */
+    'rate_limit_extended_allowed_paths' => explode(',', env('BOT_COP_RATE_LIMIT_EXTENDED_ALLOWED_PATHS', '')),
+
+    /*
      * The blocked paths.
      * Note: If you create a page or route using one of these paths,
      * BotCop will not trigger as it won't 404.
      */
     'blocked-paths' => [
         '.env',
-        'env.',
         '.git/config',
         '.git/HEAD',
         '.vscode',
-        'alfa',
-        'file.php',
-        'plugins.php',
-        'phpinfo.html'.
-        'phpinfo.php',
-        'php_info',
-        'network.php',
         'wp-config',
         'wp-includes',
         'wp-admin/css',
@@ -95,33 +109,30 @@ return [
         'x01',
         'x02',
         'x03',
-        'file-manager/tinymce',
-        'file-manager/content',
-        'laravel-file-manager',
-        'wp-json/',
-        'cgi-bin/',
-        'e/data/',
-        'phpinfo',
-        'whatsapp:',
-        'wp-content/plugins/',
-        'manager',
-        'console',
-        'backup',
-        'dashboard',
-        'cpanel',
-        'firewall',
-        'wp-admin',
-        'wordpress',
-        'settings.json',
-        'web.config',
-        'Dockerfile',
-        'Capfile',
-        'app.log',
-        'error.log',
-        'access.log',
-        'dump.sql',
-        'db.sql',
-        'backup.sql',
-        'phpmyadmin',
+        'x04',
+        'x05',
+        'x06',
+        'x07',
+        'x08',
+        'x09',
+        'x0A',
+        'x0B',
+        'x0C',
+        'x0D',
+        'x0E',
+        'x0F',
+        'x10',
+        'x11',
+        'x12',
+        'x13',
+        'x14',
+        'x15',
     ],
+
+    /*
+     * Add to the paths that are blocked using the
+     * BOT_COP_EXTENDED_BLOCKED_PATHS environment variable.
+     */
+    'extended_blocked_paths' => explode(',', env('BOT_COP_EXTENDED_BLOCKED_PATHS', '')),
+
 ];

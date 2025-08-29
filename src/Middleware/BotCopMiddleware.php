@@ -10,78 +10,88 @@ class BotCopMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        $response = $next($request);
-
         $ip = $request->getClientIp();
 
-        if ($response->status() === 404) {
+        // Check if the current IP is in the allowed_ips configuration
+        // Or in the extended_allowed_ips configuration
+        $allowedIPs = array_filter(array_merge(config('bot-cop.allowed-ips', []), config('bot-cop.extended_allowed_ips', [])));
+        foreach ($allowedIPs as $allowedIp) {
+            if (str_contains($allowedIp, '/')) {
 
-            // Check if the current IP is in the whitelist
-            foreach (config('bot-cop.allowed-ips', []) as $allowedIp) {
-                if (str_contains($allowedIp, '/')) {
+                // Handle CIDR notation (e.g., 192.168.1.0/24 or 2001:db8::/32)
+                if (filter_var($ip, FILTER_VALIDATE_IP) && $this->ipInCidr($ip, $allowedIp)) {
 
-                    // Handle CIDR notation (e.g., 192.168.1.0/24 or 2001:db8::/32)
-                    if (filter_var($ip, FILTER_VALIDATE_IP) && $this->ipInCidr($ip, $allowedIp)) {
-
-                        // Treat allowed IPs as trusted but anyone using X-Forwarded-For goes on.
-                        if($request->header('X-Forwarded-For')){
-                            $ip = $request->header('X-Forwarded-For') ?: $request->ip();
-                        } else {
-                            return $response;
-                        }
-                        
+                    // Treat allowed IPs as trusted but anyone using X-Forwarded-For goes on.
+                    if($request->header('X-Forwarded-For')){
+                        $ip = $request->header('X-Forwarded-For') ?: $request->ip();
+                    } else {
+                        return $next($request);
                     }
-                } else {
-                    // Handle single IP addresses
-                    if ($ip === $allowedIp) {
 
-                        // Treat allowed IPs as trusted but anyone using X-Forwarded-For goes on.
-                        if($request->header('X-Forwarded-For')){
-                            $ip = $request->header('X-Forwarded-For') ?: $request->ip();
-                        } else{
-                            return $response;
-                        }
+                }
+            } else {
+                // Handle single IP addresses
+                if ($ip === $allowedIp) {
+                    // Treat allowed IPs as trusted but anyone using X-Forwarded-For goes on.
+                    if($request->header('X-Forwarded-For')){
+                        $ip = $request->header('X-Forwarded-For') ?: $request->ip();
+                    } else {
+                        return $next($request);
                     }
                 }
             }
+        }
 
+        // if rate_limit_toggle is true
+        if (config('bot-cop.rate_limit_toggle', true)) {
+
+            $allowedPaths = array_filter(array_merge(config('bot-cop.rate_limit_allowed_paths', []), config('bot-cop.rate_limit_extended_allowed_paths', [])));
+            // If the request-path() is not in the rate limit allowed_paths
+            if (!in_array($request->path(), $allowedPaths)) {
+                if (RateLimiter::tooManyAttempts('page-hit:'.$ip, config('bot-cop.hits_per_minute', 20))) {
+                    return $this->rate_limit_block_log($ip, $request->url(), $request->path(), 'Speeding, wait 1 minute and try again.');
+                }
+
+                RateLimiter::increment('page-hit:'.$ip);
+            }
+        }
+
+        $response = $next($request);
+
+        if ($response->status() === 404) {
+            $blockedPaths = array_filter(array_merge(config('bot-cop.blocked-paths', []), config('bot-cop.extended_blocked_paths', [])));
             // Check if the request path is in the blocked paths
-            foreach (config('bot-cop.blocked-paths', []) as $blockedPath) {
-
+            foreach ($blockedPaths as $blockedPath) {
                 if (str_contains($request->path(), $blockedPath)) {
-
-                    foreach (config('bot-cop.enabled', []) as $service) {
-                        app(config("bot-cop.services." . $service . ".service"))->addIp($ip, $request->host(), $request->path());
+                    RateLimiter::increment('page-hit:'.$ip);
+                    // When trespassing, only allow 1 hit
+                    if (RateLimiter::tooManyAttempts('page-hit:'.$ip,1)) {
+                        foreach (config('bot-cop.enabled', []) as $service) {
+                            app(config("bot-cop.services." . $service . ".service"))->addIp($ip, $request->host(), $request->path());
+                        }
+                        return $this->rate_limit_block_log($ip, $request->url(), $request->path(), 'Trespassing, you have been blocked by our firewall for approximately 90 minutes.');
                     }
 
                     // Return a 403 on a blocked path match, regardless of services enabled.
                     return response('Forbidden', 403);
                 }
-
             }
-
             Log::channel('bot-cop')->info('LoggingService: 404 for IP: ' . $ip . ' URL: ' . $request->host() . '/' . $request->path());
-            
-        }
 
-        // if rate_limit_toggle is true
-        if (config('bot-cop.rate_limit_toggle', true)) {
-            // If not a 404
-            if (RateLimiter::tooManyAttempts('page-hit:'.$request->ip(), config('bot-cop.hits_per_minute', 20))) {
-                Log::channel('bot-cop')->info('LoggingService: 429 for IP: ' . $ip . ' URL: ' . $request->host() . '/' . $request->path());
-                return response()->make('Too many requests!', '429')->withHeaders([
-                    'Retry-After' => 60,
-                ]);
-            }
-
-            if($request->path() != "livewire/update"){ // TODO Make this an allowed path config.
-
-                RateLimiter::increment('page-hit:'.$request->ip());
-            }
         }
 
         return $response;
 
+    }
+
+    /**
+     * Log the reason someone has been rate limited and display.
+     */
+    protected function rate_limit_block_log($ip, $url, $path, $type){
+        Log::channel('bot-cop')->info('LoggingService: ' . $type . ' 429 for IP: ' . $ip . ' URL: ' . $url . '/' . $path);
+        return response()->make($type, '429')->withHeaders([
+            'Retry-After' => 60,
+        ]);
     }
 
     /**
