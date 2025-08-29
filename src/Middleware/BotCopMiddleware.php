@@ -2,6 +2,7 @@
 namespace Abigah\BotCop\Middleware;
 
 use Closure;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
@@ -11,6 +12,7 @@ class BotCopMiddleware
     public function handle(Request $request, Closure $next)
     {
         $ip = $request->getClientIp();
+        $ip = "192.168.1.1";
 
         // Check if the current IP is in the allowed_ips configuration
         // Or in the extended_allowed_ips configuration
@@ -46,8 +48,8 @@ class BotCopMiddleware
         if (config('bot-cop.rate_limit_toggle', true)) {
 
             $allowedPaths = array_filter(array_merge(config('bot-cop.rate_limit_allowed_paths', []), config('bot-cop.rate_limit_extended_allowed_paths', [])));
-            // If the request-path() is not in the rate limit allowed_paths
-            if (!in_array($request->path(), $allowedPaths)) {
+            // If the request->path() is not in the rate_limit_allowed_paths
+            if (!Str::contains($request->path(), $allowedPaths)) {
                 if (RateLimiter::tooManyAttempts('page-hit:'.$ip, config('bot-cop.hits_per_minute', 20))) {
                     return $this->rate_limit_block_log($ip, $request->url(), $request->path(), 'Speeding, wait 1 minute and try again.');
                 }
