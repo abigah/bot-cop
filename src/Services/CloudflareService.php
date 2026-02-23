@@ -57,9 +57,15 @@ class CloudflareService implements ServiceContract
             $response = Http::withToken($this->apiToken)
                 ->get("https://api.cloudflare.com/client/v4/accounts/" . $this->accountId . "/rules/lists/" . $this->listId . "/items");
 
+            if ($response->failed()) {
+                Log::channel('bot-cop')->error('Failed to fetch Cloudflare IP list.');
+                Log::channel('bot-cop')->error($response->json());
+                return;
+            }
+
             // Loop through the response and check if the IPs are older than the configured remove-after time
             $removeIps = [];
-            foreach ($response->json()['result'] as $item) {
+            foreach ($response->json()['result'] ?? [] as $item) {
                 $createdOn = \Carbon\Carbon::parse($item['created_on'])->copy()->shiftTimezone('UTC');
                 $now = \Carbon\Carbon::now()->copy()->setTimezone('UTC');
                 $diff = $createdOn->diffInMinutes($now);
