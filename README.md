@@ -105,6 +105,11 @@ Most jailing of bots and spiders is done temporarily. If you want to use the sam
 ### Can I add to the allowed list?
 Of course, you can publish the config or give us a PR. I'm also working on a Control Panel dashboard to make it something that can be done there to prevent having to deploy. Note that when you publish the config, you won't get our updates to it so you may want to hold off until we solidify all the variables.
 
+### Hex escapes in the blocked list
+The `\x00`–`\x15` entries catch the hex escapes that exploit probes put in a URL, whether they send them raw or percent-encoded (`%5Cx00`). Blocked paths are checked against both the raw and the URL-decoded path, so `%2Eenv` counts as `.env` too.
+
+Earlier versions listed these as bare `x00`–`x15`, which also matched ordinary filenames like `hero-1920x1080.jpg` or the `apple-touch-icon-120x120.png` iPhones request on their own, and banned real visitors whenever one of those 404'd. If you published the config, add the backslash to those entries.
+
 ### Can I add to the blocked list?
 For sure, you can publish the config or give us a PR. I'm also working on a Control Panel dashboard to make it something that can be done there to prevent having to deploy. Note that when you publish the config, you won't get our updates to it so you may want to hold off until we solidify all the variables.
 

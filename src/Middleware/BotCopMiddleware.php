@@ -61,9 +61,12 @@ class BotCopMiddleware
 
         if ($response->status() === 404) {
             $blockedPaths = array_filter(array_merge(config('bot-cop.blocked-paths', []), config('bot-cop.extended_blocked_paths', [])));
-            // Check if the request path is in the blocked paths
+            // Check the raw and the URL-decoded path, so a percent-encoded probe
+            // like %5Cx00 or %2Eenv matches its blocked path too.
+            $path = $request->path();
+            $decodedPath = $request->decodedPath();
             foreach ($blockedPaths as $blockedPath) {
-                if (str_contains($request->path(), $blockedPath)) {
+                if (str_contains($path, $blockedPath) || str_contains($decodedPath, $blockedPath)) {
                     RateLimiter::increment('page-hit:'.$ip);
                     // When trespassing, only allow 1 hit
                     if (RateLimiter::tooManyAttempts('page-hit:'.$ip,1)) {
